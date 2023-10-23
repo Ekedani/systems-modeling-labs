@@ -120,6 +120,9 @@ if __name__ == '__main__':
 
         # Task 3
         degrees_of_freedom = len(merged_frequencies) - 1 - 2
+        if degrees_of_freedom < 0:
+            print('Занадто мала кількість ступенів свободи, перевірка не може бути проведена')
+            continue
         check_sample_distribution_law(
             law_name,
             merged_frequencies,
