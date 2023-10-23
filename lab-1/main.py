@@ -83,8 +83,8 @@ if __name__ == '__main__':
         )
 
     # Uniform distribution
-    a_values = [5 ** 13, 7 ** 5, 10 ** 10]
-    c_values = [2 ** 31, 2 ** 12, 42 ** 10]
+    a_values = [5 ** 13, 7 ** 5, 10 ** 10, 95]
+    c_values = [2 ** 31, 2 ** 12, 42 ** 10, 108]
     law_name = 'рівномірний'
     for a_c in zip(a_values, c_values):
         parameters = f'a = {a_c[0]}, c = {a_c[1]}'
@@ -96,20 +96,27 @@ if __name__ == '__main__':
         intervals, frequencies = get_frequency_table(uniform_sample)
         merged_intervals, merged_frequencies = merge_intervals(intervals, frequencies)
         theoretic_density = []
-        for i in range(len(merged_intervals) - 1):
+        for i in range(len(intervals) - 1):
             theoretic_density.append(
-                uniform.cdf(merged_intervals[i + 1], loc=0, scale=1) -
-                uniform.cdf(merged_intervals[i], loc=0, scale=1)
+                uniform.cdf(intervals[i + 1], loc=0, scale=1) -
+                uniform.cdf(intervals[i], loc=0, scale=1)
             )
 
         build_histogram(
             uniform_sample,
             intervals,
             theoretic_density,
-            merged_intervals,
+            intervals,
             law_name,
             parameters
         )
+
+        theoretic_density = []
+        for i in range(len(merged_intervals) - 1):
+            theoretic_density.append(
+                uniform.cdf(merged_intervals[i + 1], loc=0, scale=1) -
+                uniform.cdf(merged_intervals[i], loc=0, scale=1)
+            )
 
         # Task 3
         degrees_of_freedom = len(merged_frequencies) - 1 - 2

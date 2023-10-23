@@ -77,4 +77,6 @@ def build_histogram(
     theoretic_law = [x * len(sample) for x in theoretic_density]
     intervals_centers = [(merged_intervals[i] + merged_intervals[i + 1]) / 2 for i in range(len(merged_intervals) - 1)]
     plt.plot(intervals_centers, theoretic_law, color='red')
+    plt.subplots_adjust(bottom=0.2)
+    plt.savefig(f'out\\histogram_{law_name}_{parameters}.png')
     plt.show()
