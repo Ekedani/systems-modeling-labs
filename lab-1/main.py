@@ -2,6 +2,7 @@ from generators import generate_n_exponential, generate_n_normal, generate_n_uni
 from chi_squared_test import check_sample_distribution_law
 from scipy.stats import expon, norm, uniform
 from statistics import find_sample_mean_and_variance, get_frequency_table, merge_intervals, build_histogram
+from math import sqrt
 
 if __name__ == '__main__':
     # Exponential distribution
@@ -15,13 +16,13 @@ if __name__ == '__main__':
         exponential_sample = generate_n_exponential(SAMPLE_SIZE, lamda)
 
         # Task 2
-        find_sample_mean_and_variance(exponential_sample)
+        mean, variance = find_sample_mean_and_variance(exponential_sample)
         intervals, frequencies = get_frequency_table(exponential_sample)
         merged_intervals, merged_frequencies = merge_intervals(intervals, frequencies)
         theoretic_density = []
         for i in range(len(merged_intervals) - 1):
             theoretic_density.append(
-                expon.cdf(merged_intervals[i + 1], scale=1 / lamda) - expon.cdf(merged_intervals[i], scale=1 / lamda)
+                expon.cdf(merged_intervals[i + 1], scale=1 / (1/mean)) - expon.cdf(merged_intervals[i], scale=1 / (1/mean))
             )
 
         build_histogram(
@@ -53,14 +54,14 @@ if __name__ == '__main__':
         normal_sample = generate_n_normal(SAMPLE_SIZE, sigma_alpha[0], sigma_alpha[1])
 
         # Task 2
-        find_sample_mean_and_variance(normal_sample)
+        mean, variance = find_sample_mean_and_variance(normal_sample)
         intervals, frequencies = get_frequency_table(normal_sample)
         merged_intervals, merged_frequencies = merge_intervals(intervals, frequencies)
         theoretic_density = []
         for i in range(len(merged_intervals) - 1):
             theoretic_density.append(
-                norm.cdf(merged_intervals[i + 1], loc=sigma_alpha[1], scale=sigma_alpha[0]) -
-                norm.cdf(merged_intervals[i], loc=sigma_alpha[1], scale=sigma_alpha[0])
+                norm.cdf(merged_intervals[i + 1], loc=mean, scale=sqrt(variance)) -
+                norm.cdf(merged_intervals[i], loc=mean, scale=sqrt(variance))
             )
 
         build_histogram(

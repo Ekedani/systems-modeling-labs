@@ -51,10 +51,13 @@ def merge_intervals(intervals, frequencies, min_falls_per_interval=5):
 def find_sample_mean_and_variance(sample):
     mean = sum(sample) / len(sample)
     variance = sum((x - mean) ** 2 for x in sample) / len(sample)
+    unbiased_variance = sum((x - mean) ** 2 for x in sample) / (len(sample) - 1)
     print(
         f'Вибіркове середнє: {mean}'
         f'\nВибіркова дисперсія: {variance}'
+        f'\nВиправлена вибіркова дисперсія: {unbiased_variance}'
     )
+    return mean, unbiased_variance
 
 
 def build_histogram(
