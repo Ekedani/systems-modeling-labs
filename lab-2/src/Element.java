@@ -142,7 +142,7 @@ public class Element {
     }
 
     public void printInfo() {
-        System.out.println(getName() + " state= " + state +
+        System.out.println(getName() + " state = " + state +
                 " quantity = " + quantity +
                 " tnext= " + tnext);
     }
