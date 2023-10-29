@@ -52,19 +52,12 @@ public class Element {
         double delay = getDelayMean();
         if ("exp".equalsIgnoreCase(getDistribution())) {
             delay = FunRand.Exp(getDelayMean());
-        } else {
-            if ("norm".equalsIgnoreCase(getDistribution())) {
-                delay = FunRand.Norm(getDelayMean(),
-                        getDelayDev());
-            } else {
-                if ("unif".equalsIgnoreCase(getDistribution())) {
-                    delay = FunRand.Unif(getDelayMean(),
-                            getDelayDev());
-                } else {
-                    if ("".equalsIgnoreCase(getDistribution()))
-                        delay = getDelayMean();
-                }
-            }
+        } else if ("norm".equalsIgnoreCase(getDistribution())) {
+            delay = FunRand.Norm(getDelayMean(), getDelayDev());
+        } else if ("unif".equalsIgnoreCase(getDistribution())) {
+            delay = FunRand.Unif(getDelayMean(), getDelayDev());
+        } else if ("".equalsIgnoreCase(getDistribution())) {
+            delay = getDelayMean();
         }
         return delay;
     }
