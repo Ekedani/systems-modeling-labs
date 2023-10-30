@@ -69,9 +69,11 @@ public class Process extends Element {
             channels.get(index).setState(0);
         }
 
-        var nextElement = getNextElement();
-        if (nextElement != null) {
-            nextElement.inAct();
+        for (int i = 0; i < channelsWithMinTnext.size(); i++) {
+            var nextElement = getNextElement();
+            if (nextElement != null) {
+                nextElement.inAct();
+            }
         }
 
         if (getQueue() > 0) {
