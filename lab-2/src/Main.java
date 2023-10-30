@@ -4,8 +4,8 @@ import java.util.Arrays;
 public class Main {
     public static void main(String[] args) {
         // simpleModel();
-        threeProcessesModel();
-        // complexModel();
+        // threeProcessesModel();
+        complexModel();
     }
 
     // Task 1-2
@@ -18,7 +18,7 @@ public class Main {
 
         process.setMaxqueue(5);
 
-        create.setNextElement(process);
+        create.addNextElement(process);
 
         create.setDistribution("exp");
         process.setDistribution("exp");
@@ -47,9 +47,9 @@ public class Main {
         process2.setMaxqueue(5);
         process3.setMaxqueue(5);
 
-        create.setNextElement(process1);
-        process1.setNextElement(process2);
-        process2.setNextElement(process3);
+        create.addNextElement(process1);
+        process1.addNextElement(process2);
+        process2.addNextElement(process3);
 
         create.setDistribution("exp");
         process1.setDistribution("exp");
@@ -67,7 +67,7 @@ public class Main {
     // Task 5-6
     public static void complexModel() {
         Create create = new Create(1.0);
-        Process process1 = new Process(5.0, 4);
+        Process process1 = new Process(2.0, 4);
         Process process2 = new Process(1.0);
         Process process3 = new Process(1.0);
 
@@ -80,10 +80,10 @@ public class Main {
         process2.setMaxqueue(10);
         process3.setMaxqueue(10);
 
-        create.setNextElement(process1);
-        process1.setNextElement(process2);
-        process2.setNextElement(process1);
-        process2.setNextElement(process3);
+        create.addNextElement(process1);
+        process1.addNextElement(process2);
+        process2.addNextElement(process1);
+        process2.addNextElement(process3);
 
         create.setDistribution("exp");
         process1.setDistribution("exp");

@@ -113,7 +113,7 @@ public class Element {
     }
 
 
-    public void setNextElement(Element nextElement) {
+    public void addNextElement(Element nextElement) {
         this.nextElements.add(nextElement);
     }
 
@@ -155,7 +155,7 @@ public class Element {
     public void printInfo() {
         System.out.println(getName() + " state = " + state +
                 " quantity = " + quantity +
-                " tnext= " + tnext);
+                " tnext= " + getTnext());
     }
 
     public String getName() {
