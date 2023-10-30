@@ -82,6 +82,10 @@ public class Element {
         return quantity;
     }
 
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     public double getTcurr() {
         return tcurr;
     }
