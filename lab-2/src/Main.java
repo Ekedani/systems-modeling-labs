@@ -4,8 +4,8 @@ import java.util.Arrays;
 public class Main {
     public static void main(String[] args) {
         // simpleModel();
-        // threeProcessesModel();
-        complexModel();
+        threeProcessesModel();
+        // complexModel();
     }
 
     // Task 1-2
@@ -36,7 +36,7 @@ public class Main {
         Create create = new Create(2.0);
         Process process1 = new Process(1.0);
         Process process2 = new Process(1.0);
-        Process process3 = new Process(1.0);
+        Process process3 = new Process(2.0);
 
         create.setName("CREATE");
         process1.setName("PROCESS-1");

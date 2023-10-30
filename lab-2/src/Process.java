@@ -109,8 +109,7 @@ public class Process extends Element {
     @Override
     public void printInfo() {
         super.printInfo();
-        System.out.println("failure = " + this.getFailure());
-        System.out.println("worktime = " + this.workTime);
+        System.out.println("failure = " + this.getFailure() + " worktime = " + this.workTime );
     }
 
     @Override

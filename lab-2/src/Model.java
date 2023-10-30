@@ -21,9 +21,9 @@ public class Model {
                     event = e.getId();
                 }
             }
-            System.out.println("\nIt's time for event in " +
+            System.out.println("\nEvent in " +
                     list.get(event).getName() +
-                    ", tnext = " + tnext + ", tcurr = " + tcurr);
+                    ", tnext = " + tnext);
             for (Element e : list) {
                 e.doStatistics(tnext - tcurr);
             }
@@ -53,12 +53,9 @@ public class Model {
         for (Element e : list) {
             e.printResult();
             if (e instanceof Process p) {
-                System.out.println("mean length of queue = " +
-                        p.getMeanQueue() / tcurr
-                        + "\tfailure probability = " +
-                        p.getFailure() / (double) (p.getQuantity() + p.getFailure())
-                        + "\taverage workload = " +
-                        p.getWorkTime() / tcurr
+                System.out.println("Mean length of queue = " + p.getMeanQueue() / tcurr
+                        + "  failure probability = " + p.getFailure() / (double) (p.getQuantity() + p.getFailure())
+                        + "  average workload = " + p.getWorkTime() / tcurr
                 );
             }
         }
