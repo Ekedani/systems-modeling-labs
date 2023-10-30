@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Element {
     private String name;
     private double tnext;
@@ -6,7 +8,7 @@ public class Element {
     private int quantity;
     private double tcurr;
     private int state;
-    private Element nextElement;
+    private final ArrayList<Element> nextElements;
     private static int nextId = 0;
     private int id;
 
@@ -16,7 +18,7 @@ public class Element {
         distribution = "exp";
         tcurr = tnext;
         state = 0;
-        nextElement = null;
+        nextElements = new ArrayList<>();
         id = nextId;
         nextId++;
         name = "element" + id;
@@ -29,7 +31,7 @@ public class Element {
         distribution = "";
         tcurr = tnext;
         state = 0;
-        nextElement = null;
+        nextElements = new ArrayList<>();
         id = nextId;
         nextId++;
         name = "element" + id;
@@ -42,7 +44,7 @@ public class Element {
         distribution = "exp";
         tcurr = tnext;
         state = 0;
-        nextElement = null;
+        nextElements = new ArrayList<>();
         id = nextId;
         nextId++;
         name = "element" + id;
@@ -103,11 +105,16 @@ public class Element {
     }
 
     public Element getNextElement() {
-        return nextElement;
+        if (nextElements.size() == 0) {
+            return null;
+        }
+        var randomIndex = (int) (Math.random() * nextElements.size());
+        return nextElements.get(randomIndex);
     }
 
+
     public void setNextElement(Element nextElement) {
-        this.nextElement = nextElement;
+        this.nextElements.add(nextElement);
     }
 
     public void inAct() {

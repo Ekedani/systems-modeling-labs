@@ -55,9 +55,9 @@ public class Model {
             if (e instanceof Process p) {
                 System.out.println("mean length of queue = " +
                         p.getMeanQueue() / tcurr
-                        + "\nfailure probability = " +
+                        + "\tfailure probability = " +
                         p.getFailure() / (double) (p.getQuantity() + p.getFailure())
-                        + "\naverage workload = " +
+                        + "\taverage workload = " +
                         p.getWorkTime() / tcurr
                 );
             }
