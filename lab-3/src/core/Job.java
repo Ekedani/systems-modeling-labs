@@ -4,13 +4,12 @@ public class Job {
     private final int id;
     private final double timeIn;
     private double timeOut;
-    private double timeWait;
-    private double timeWork;
 
     private static int nextId = 0;
 
     public Job(double timeIn) {
         this.timeIn = timeIn;
+        this.timeOut = timeIn;
         this.id = nextId;
         nextId++;
     }
@@ -25,14 +24,6 @@ public class Job {
 
     public double getTimeOut() {
         return timeOut;
-    }
-
-    public double getTimeWait() {
-        return timeWait;
-    }
-
-    public double getTimeWork() {
-        return timeWork;
     }
 
     public void setTimeOut(double timeOut) {
