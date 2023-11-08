@@ -2,13 +2,14 @@ package core;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class Element {
     private static int nextId = 0;
-    private final Distribution distribution;
     private final ArrayList<Route> routes = new ArrayList<>();
     private final int id;
     private final String name;
+    private Distribution distribution;
     private double tNext;
     private double tCurr;
     private double delayMean;
@@ -110,22 +111,23 @@ public class Element {
         if (routes.size() == 0) {
             return null;
         }
-        var selectedRoute = routes.get(0);
+        Route selectedRoute = null;
         for (var route : routes) {
-            if (route.getPriority() > selectedRoute.getPriority() && !route.isBlocked()) {
+            if (!route.isBlocked()) {
                 selectedRoute = route;
+                break;
             }
         }
-        var samePriorityRoutes = getRoutesByPriority(selectedRoute.getPriority());
-        var unblockedRoutes = getUnblockedRoutes(samePriorityRoutes);
-        if (unblockedRoutes.size() == 0) {
-            return selectedRoute;
+        if (selectedRoute == null) {
+            return routes.get(0);
         }
+
+        var samePriorityRoutes = getRoutesByPriority(selectedRoute.getPriority());
         var probability = Math.random();
-        var scaledProbabilities = getScaledProbabilities(unblockedRoutes);
+        var scaledProbabilities = getScaledProbabilities(samePriorityRoutes);
         for (int i = 0; i < scaledProbabilities.length; i++) {
             if (probability < scaledProbabilities[i]) {
-                selectedRoute = unblockedRoutes.get(i);
+                selectedRoute = samePriorityRoutes.get(i);
                 break;
             }
         }
@@ -142,8 +144,8 @@ public class Element {
         return routesByPriority;
     }
 
-    public void addRoutes(ArrayList<Route> routes) {
-        this.routes.addAll(routes);
+    public void addRoutes(Route... routes) {
+        this.routes.addAll(List.of(routes));
         this.routes.sort(Comparator.comparingInt(Route::getPriority).reversed());
     }
 
@@ -183,11 +185,11 @@ public class Element {
     }
 
     public void printInfo() {
-        System.out.println(name + " state = " + getState() + " quantity = " + quantity + " tnext= " + getTNext());
+        System.out.println(name + " state = " + getState() + " quantity = " + getQuantity() + " tnext= " + getTNext());
     }
 
     public void printResult() {
-        System.out.println(name + " quantity = " + quantity);
+        System.out.println(name + " quantity = " + getQuantity());
     }
 
     public int getId() {
@@ -195,5 +197,9 @@ public class Element {
     }
 
     public void doStatistics(double delta) {
+    }
+
+    public void setDistribution(Distribution distribution) {
+        this.distribution = distribution;
     }
 }

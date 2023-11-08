@@ -13,5 +13,11 @@ public class Dispose extends Element {
     public void inAct(Job job) {
         super.inAct(job);
         processedJobs.add(job);
+        super.outAct();
+    }
+
+    @Override
+    public void printInfo() {
+        System.out.println(getName() + " quantity = " + getQuantity());
     }
 }

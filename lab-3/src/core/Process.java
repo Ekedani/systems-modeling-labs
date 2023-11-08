@@ -5,39 +5,12 @@ import java.util.ArrayList;
 import java.util.Queue;
 
 public class Process extends Element {
+    private final Queue<Job> queue = new ArrayDeque<>();
+    private final ArrayList<Channel> channels = new ArrayList<>();
     private int failures = 0;
     private double meanQueue = 0.0;
     private double workTime = 0.0;
-
     private int maxQueueSize = Integer.MAX_VALUE;
-    private final Queue<Job> queue = new ArrayDeque<>();
-
-    private final ArrayList<Channel> channels = new ArrayList<>();
-
-    static class Channel {
-        private Job currentJob = null;
-        private double tNext = Double.MAX_VALUE;
-
-        public int getState() {
-            return currentJob == null ? 0 : 1;
-        }
-
-        public Job getCurrentJob() {
-            return currentJob;
-        }
-
-        public void setCurrentJob(Job currentJob) {
-            this.currentJob = currentJob;
-        }
-
-        public double getTNext() {
-            return tNext;
-        }
-
-        public void setTNext(double tnext) {
-            this.tNext = tnext;
-        }
-    }
 
     public Process(String name, double delayMean, int channelsNum) {
         super(name, delayMean);
@@ -183,5 +156,30 @@ public class Process extends Element {
             }
         }
         return tNext;
+    }
+
+    static class Channel {
+        private Job currentJob = null;
+        private double tNext = Double.MAX_VALUE;
+
+        public int getState() {
+            return currentJob == null ? 0 : 1;
+        }
+
+        public Job getCurrentJob() {
+            return currentJob;
+        }
+
+        public void setCurrentJob(Job currentJob) {
+            this.currentJob = currentJob;
+        }
+
+        public double getTNext() {
+            return tNext;
+        }
+
+        public void setTNext(double tnext) {
+            this.tNext = tnext;
+        }
     }
 }

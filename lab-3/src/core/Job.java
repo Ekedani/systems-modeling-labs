@@ -1,11 +1,10 @@
 package core;
 
 public class Job {
+    private static int nextId = 0;
     private final int id;
     private final double timeIn;
     private double timeOut;
-
-    private static int nextId = 0;
 
     public Job(double timeIn) {
         this.timeIn = timeIn;

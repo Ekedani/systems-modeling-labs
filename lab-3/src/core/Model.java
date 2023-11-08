@@ -1,6 +1,7 @@
 package core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Model {
     private final ArrayList<Element> elements;
@@ -8,8 +9,8 @@ public class Model {
     double tNext;
     int event;
 
-    public Model(ArrayList<Element> elements) {
-        this.elements = elements;
+    public Model(Element... elements) {
+        this.elements = new ArrayList<>(Arrays.asList(elements));
         tNext = 0.0;
         tCurr = tNext;
         event = 0;

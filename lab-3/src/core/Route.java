@@ -19,8 +19,8 @@ public class Route {
 
     public Route(Element element, double probability, int priority) {
         this.element = element;
-        this.priority = priority;
         this.probability = probability;
+        this.priority = priority;
     }
 
     public Route(Element element, double probability, int priority, Callable<Boolean> block) {
