@@ -2,27 +2,31 @@ package core;
 
 import java.util.concurrent.Callable;
 
-public class NextElement {
-    private Element element;
+public class Route {
+    private final Element element;
     private int priority = 0;
     private double probability = 0.0;
     private Callable<Boolean> block = null;
 
-    public NextElement(Element element) {
+    public Route(Element element) {
         this.element = element;
     }
 
-    public NextElement(Element element, int priority) {
-        this.element = element;
-        this.priority = priority;
-    }
-
-    public NextElement(Element element, double probability) {
+    public Route(Element element, double probability) {
         this.element = element;
         this.probability = probability;
     }
 
-    public void setBlock(Callable<Boolean> block) {
+    public Route(Element element, double probability, int priority) {
+        this.element = element;
+        this.priority = priority;
+        this.probability = probability;
+    }
+
+    public Route(Element element, double probability, int priority, Callable<Boolean> block) {
+        this.element = element;
+        this.probability = probability;
+        this.priority = priority;
         this.block = block;
     }
 
@@ -33,8 +37,7 @@ public class NextElement {
         try {
             return block.call();
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            throw new RuntimeException(e);
         }
     }
 
