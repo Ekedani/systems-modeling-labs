@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 public class Route {
     private final Element element;
     private int priority = 0;
-    private double probability = 0.0;
+    private double probability = 1.0;
     private Callable<Boolean> block = null;
 
     public Route(Element element) {

@@ -9,6 +9,7 @@ public class Element {
     private final ArrayList<Route> routes = new ArrayList<>();
     private final int id;
     private final String name;
+    private Routing routing = Routing.BY_PRIORITY;
     private Distribution distribution;
     private double tNext;
     private double tCurr;
@@ -69,6 +70,10 @@ public class Element {
         return probabilities;
     }
 
+    public void setRouting(Routing routing) {
+        this.routing = routing;
+    }
+
     public double getDelay() {
         return switch (distribution) {
             case EXPONENTIAL -> FunRand.Exponential(delayMean);
@@ -111,6 +116,37 @@ public class Element {
         if (routes.size() == 0) {
             return null;
         }
+        return switch (routing) {
+            case BY_PROBABILITY -> getNextRouteByProbability();
+            case BY_PRIORITY -> getNextRouteByPriority();
+            case COMBINED -> getNextRouteCombined();
+        };
+    }
+
+    private Route getNextRouteByProbability() {
+        var unblockedRoutes = getUnblockedRoutes(routes);
+        if (unblockedRoutes.size() == 0) {
+            return routes.get(0);
+        }
+        var probability = Math.random();
+        var scaledProbabilities = getScaledProbabilities(unblockedRoutes);
+        for (int i = 0; i < scaledProbabilities.length; i++) {
+            if (probability < scaledProbabilities[i]) {
+                return unblockedRoutes.get(i);
+            }
+        }
+        return unblockedRoutes.get(unblockedRoutes.size() - 1);
+    }
+
+    private Route getNextRouteByPriority() {
+        var unblockedRoutes = getUnblockedRoutes(routes);
+        if (unblockedRoutes.size() == 0) {
+            return routes.get(0);
+        }
+        return unblockedRoutes.get(0);
+    }
+
+    private Route getNextRouteCombined() {
         Route selectedRoute = null;
         for (var route : routes) {
             if (!route.isBlocked()) {
@@ -122,7 +158,7 @@ public class Element {
             return routes.get(0);
         }
 
-        var samePriorityRoutes = getRoutesByPriority(selectedRoute.getPriority());
+        var samePriorityRoutes = findRoutesByPriority(selectedRoute.getPriority());
         var probability = Math.random();
         var scaledProbabilities = getScaledProbabilities(samePriorityRoutes);
         for (int i = 0; i < scaledProbabilities.length; i++) {
@@ -134,7 +170,7 @@ public class Element {
         return selectedRoute;
     }
 
-    private ArrayList<Route> getRoutesByPriority(int priority) {
+    private ArrayList<Route> findRoutesByPriority(int priority) {
         var routesByPriority = new ArrayList<Route>();
         for (var route : routes) {
             if (route.getPriority() == priority) {

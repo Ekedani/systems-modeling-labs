@@ -26,11 +26,11 @@ public class Process extends Element {
         }
     }
 
-    public void initializeChannelsWithJobs(int jobsNum) {
+    public void initializeChannelsWithJobs(int jobsNum, double delay) {
         jobsNum = Math.min(jobsNum, channels.size());
         for (int i = 0; i < jobsNum; i++) {
             channels.get(i).setCurrentJob(new Job(0.0));
-            channels.get(i).setTNext(super.getTCurr() + super.getDelay());
+            channels.get(i).setTNext(delay);
         }
     }
 
@@ -66,6 +66,10 @@ public class Process extends Element {
             var nextRoute = getNextRoute();
             if (nextRoute != null && nextRoute.getElement() != null) {
                 nextRoute.getElement().inAct(job);
+            }
+
+            if(nextRoute.isBlocked()){
+                channel.setTNext(nextRoute.getElement().getTNext());
             }
 
             channel.setCurrentJob(null);
