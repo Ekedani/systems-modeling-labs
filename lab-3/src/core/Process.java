@@ -26,11 +26,11 @@ public class Process extends Element {
         }
     }
 
-    public void initializeChannelsWithJobs(int jobsNum, double delay) {
+    public void initializeChannelsWithJobs(int jobsNum) {
         jobsNum = Math.min(jobsNum, channels.size());
         for (int i = 0; i < jobsNum; i++) {
             channels.get(i).setCurrentJob(new Job(0.0));
-            channels.get(i).setTNext(delay);
+            channels.get(i).setTNext(super.getTCurr() + super.getDelay());
         }
     }
 
@@ -64,12 +64,12 @@ public class Process extends Element {
             var job = channel.getCurrentJob();
 
             var nextRoute = getNextRoute();
-            if (nextRoute != null && nextRoute.getElement() != null) {
-                nextRoute.getElement().inAct(job);
+            if (nextRoute.isBlocked()) {
+                continue;
             }
 
-            if(nextRoute.isBlocked()){
-                channel.setTNext(nextRoute.getElement().getTNext());
+            if (nextRoute.getElement() != null) {
+                nextRoute.getElement().inAct(job);
             }
 
             channel.setCurrentJob(null);
@@ -131,10 +131,6 @@ public class Process extends Element {
         return workTime;
     }
 
-    public int getChannelsNum() {
-        return channels.size();
-    }
-
     @Override
     public void doStatistics(double delta) {
         super.doStatistics(delta);
@@ -160,6 +156,30 @@ public class Process extends Element {
             }
         }
         return tNext;
+    }
+
+    @Override
+    public void setTNext(double tNext) {
+        double previousTNext = getTNext();
+        for (Channel channel : channels) {
+            if (channel.getTNext() == previousTNext) {
+                channel.setTNext(tNext);
+            }
+        }
+    }
+
+    @Override
+    public void printInfo() {
+        System.out.println(getName() +
+                " state = " + getState() +
+                " quantity = " + getQuantity() +
+                " tnext = " + getTNext() +
+                " failures = " + failures
+        );
+    }
+
+    public int getQueueSize() {
+        return queue.size();
     }
 
     static class Channel {

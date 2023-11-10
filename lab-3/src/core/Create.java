@@ -1,6 +1,8 @@
 package core;
 
 public class Create extends Element {
+    private int failures = 0;
+
     public Create(String name, double delay) {
         super(name, delay);
         super.setTNext(0.0);
@@ -16,6 +18,11 @@ public class Create extends Element {
         super.outAct();
         super.setTNext(super.getTCurr() + super.getDelay());
         var createdJob = new Job(super.getTCurr());
-        super.getNextRoute().getElement().inAct(createdJob);
+        var nextRoute = super.getNextRoute();
+        if (nextRoute.getElement() == null || nextRoute.isBlocked()) {
+            failures++;
+        } else {
+            nextRoute.getElement().inAct(createdJob);
+        }
     }
 }

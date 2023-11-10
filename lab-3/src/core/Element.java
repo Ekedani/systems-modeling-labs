@@ -114,7 +114,7 @@ public class Element {
 
     public Route getNextRoute() {
         if (routes.size() == 0) {
-            return null;
+            return new Route(null);
         }
         return switch (routing) {
             case BY_PROBABILITY -> getNextRouteByProbability();
@@ -221,7 +221,7 @@ public class Element {
     }
 
     public void printInfo() {
-        System.out.println(name + " state = " + getState() + " quantity = " + getQuantity() + " tnext= " + getTNext());
+        System.out.println(name + " state = " + getState() + " quantity = " + getQuantity() + " tnext = " + getTNext());
     }
 
     public void printResult() {

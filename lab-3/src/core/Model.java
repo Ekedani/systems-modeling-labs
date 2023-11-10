@@ -7,25 +7,26 @@ public class Model {
     private final ArrayList<Element> elements;
     double tCurr;
     double tNext;
-    int event;
+    int nearestEvent;
 
     public Model(Element... elements) {
         this.elements = new ArrayList<>(Arrays.asList(elements));
         tNext = 0.0;
         tCurr = tNext;
-        event = 0;
+        nearestEvent = 0;
     }
 
     public void simulate(double time) {
         while (tCurr < time) {
             tNext = Double.MAX_VALUE;
             for (var element : elements) {
-                if (element.getTNext() < tNext) {
+                if (tCurr < element.getTNext() && element.getTNext() < tNext) {
                     tNext = element.getTNext();
-                    event = element.getId();
+                    nearestEvent = element.getId();
                 }
             }
-            System.out.println("\nEvent in " + elements.get(event).getName() + ", tNext = " + tNext);
+            updateBlockedElements();
+            System.out.println("\nEvent in " + elements.get(nearestEvent).getName() + ", tNext = " + tNext);
             var delta = tNext - tCurr;
             for (Element element : elements) {
                 element.doStatistics(delta);
@@ -34,7 +35,7 @@ public class Model {
             for (var element : elements) {
                 element.setTCurr(tCurr);
             }
-            elements.get(event).outAct();
+            elements.get(nearestEvent).outAct();
             // TODO: maybe should be reversed
             for (var element : elements) {
                 if (element.getTNext() == tCurr) {
@@ -55,9 +56,22 @@ public class Model {
     public void printResult() {
         System.out.println("\n-------------RESULTS-------------");
         for (var element : elements) {
+            System.out.print("-> ");
             element.printResult();
+            if (element instanceof Process p) {
+                System.out.println("   Mean Queue = " + p.getMeanQueue() / tCurr);
+                System.out.println("   Mean Workload = " + p.getWorkTime() / tCurr);
+                System.out.println("   Failure Probability = " + p.getFailures() / (double) (p.getQuantity() + p.getFailures()));
+            }
         }
     }
 
+    private void updateBlockedElements() {
+        for (var element : elements) {
+            if (element.getTNext() <= tCurr) {
+                element.setTNext(tNext);
+            }
+        }
+    }
 
 }
