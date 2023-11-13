@@ -1,14 +1,14 @@
 import bank.BankModel;
 import bank.SwitchingProcess;
-import clinic.PatientCreate;
-import clinic.RegistrationProcess;
+import clinic.*;
 import core.Process;
 import core.*;
 
 public class Main {
     public static void main(String[] args) {
         System.out.println("lab-3");
-        bank();
+        //bank();
+        clinic();
     }
 
     public static void bank() {
@@ -35,7 +35,7 @@ public class Main {
 
         create.setRouting(Routing.BY_PRIORITY);
         create.addRoutes(
-                new Route(cashierWindow1, 0.5, 1, () -> cashierWindow2.getQueueSize() < cashierWindow1.getQueueSize()),
+                new Route(cashierWindow1, 0.5, 1, (Job job) -> cashierWindow2.getQueueSize() < cashierWindow1.getQueueSize()),
                 new Route(cashierWindow2, 0.5, 0)
         );
 
@@ -56,13 +56,13 @@ public class Main {
         final double[] patientFrequencies = {0.5, 0.1, 0.4};
         final double[] patientDelays = {15, 40, 30};
 
-        var create = new PatientCreate("Patient Creator", 0.5);
-        var registration = new RegistrationProcess("Registration", 1, 2);
-        var wardsTransfer = new Process("Wards Transfer", 1, 2);
-        var laboratoryTransfer = new Process("Laboratory Transfer", 1, 1000);
-        var laboratoryRegistration = new Process("Laboratory Registration", 1, 1);
-        var laboratoryAnalysis = new Process("Laboratory Analysis", 1, 2);
-        var registrationTransfer = new Process("Registration Transfer", 1, 2);
+        var create = new PatientCreate("Patient Creator", 15);
+        var registration = new RegistrationProcess("Registration", 15, 2);
+        var wardsTransfer = new Process("Wards Transfer", 3, 8, 2);
+        var laboratoryTransfer = new Process("Laboratory Transfer", 2, 5, 200);
+        var laboratoryRegistration = new Process("Laboratory Registration", 4.5, 3, 1);
+        var laboratoryAnalysis = new TypeModifyingProcess("Laboratory Analysis", 4, 2, 2);
+        var registrationTransfer = new Process("Registration Transfer", 2, 5, 200);
 
         var wardsDispose = new Dispose("Dispose [Type 1 & 2]");
         var laboratoryDispose = new Dispose("Dispose [Type 3]");
@@ -71,6 +71,10 @@ public class Main {
         create.setPatientTypedFrequencies(patientTypes, patientFrequencies);
         registration.setPatientTypedDelays(patientTypes, patientDelays);
         registration.setPrioritizedPatientType(1);
+        laboratoryAnalysis.setTypeModifyingMap(
+                new int[] {2},
+                new int[] {1}
+        );
 
         create.setDistribution(Distribution.EXPONENTIAL);
         registration.setDistribution(Distribution.EXPONENTIAL);
@@ -84,9 +88,10 @@ public class Main {
                 new Route(registration)
         );
         registration.addRoutes(
-                new Route(wardsTransfer),
-                new Route(laboratoryTransfer)
+                new Route(wardsTransfer, 0.5, 1, (Job job) -> ((Patient) job).getType() != 1),
+                new Route(laboratoryTransfer, 0.5, 0)
         );
+        registration.setRouting(Routing.BY_PRIORITY);
         wardsTransfer.addRoutes(
                 new Route(wardsDispose)
         );
@@ -97,12 +102,16 @@ public class Main {
                 new Route(laboratoryAnalysis)
         );
         laboratoryAnalysis.addRoutes(
-                new Route(laboratoryDispose),
-                new Route(registrationTransfer)
+                new Route(laboratoryDispose, 0.5, 1, (Job job) -> ((Patient) job).getType() != 3),
+                new Route(registrationTransfer, 0.5, 0)
         );
+        laboratoryAnalysis.setRouting(Routing.BY_PRIORITY);
         registrationTransfer.addRoutes(
                 new Route(registration)
         );
 
+        var model = new ClinicModel(create, registration, wardsTransfer, laboratoryTransfer, laboratoryRegistration,
+                laboratoryAnalysis, registrationTransfer, wardsDispose, laboratoryDispose);
+        model.simulate(1000);
     }
 }

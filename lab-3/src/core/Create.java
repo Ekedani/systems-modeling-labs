@@ -18,8 +18,8 @@ public class Create extends Element {
         super.outAct();
         super.setTNext(super.getTCurr() + super.getDelay());
         var createdJob = createJob();
-        var nextRoute = super.getNextRoute();
-        if (nextRoute.getElement() == null || nextRoute.isBlocked()) {
+        var nextRoute = super.getNextRoute(createdJob);
+        if (nextRoute.getElement() == null || nextRoute.isBlocked(createdJob)) {
             failures++;
         } else {
             nextRoute.getElement().inAct(createdJob);

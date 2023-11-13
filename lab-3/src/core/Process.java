@@ -70,8 +70,8 @@ public class Process extends Element {
         for (var channel : channelsWithMinTNext) {
             var job = channel.getCurrentJob();
 
-            var nextRoute = getNextRoute();
-            if (nextRoute.isBlocked()) {
+            var nextRoute = getNextRoute(job);
+            if (nextRoute.isBlocked(job)) {
                 continue;
             }
 
@@ -98,7 +98,7 @@ public class Process extends Element {
         }
     }
 
-    private ArrayList<Channel> getChannelsWithMinTNext() {
+    protected ArrayList<Channel> getChannelsWithMinTNext() {
         var channelsWithMinTNext = new ArrayList<Channel>();
         var minTNext = Double.MAX_VALUE;
         for (var channel : channels) {

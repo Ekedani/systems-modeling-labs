@@ -1,15 +1,18 @@
 package core;
 
-import java.util.concurrent.Callable;
-
 public class Route {
     private final Element element;
     private int priority = 0;
     private double probability = 1.0;
-    private Callable<Boolean> block = null;
+    private Block block = null;
 
     public Route(Element element) {
         this.element = element;
+    }
+
+    public Route(Element element, Block block) {
+        this.element = element;
+        this.block = block;
     }
 
     public Route(Element element, double probability) {
@@ -23,19 +26,19 @@ public class Route {
         this.priority = priority;
     }
 
-    public Route(Element element, double probability, int priority, Callable<Boolean> block) {
+    public Route(Element element, double probability, int priority, Block block) {
         this.element = element;
         this.probability = probability;
         this.priority = priority;
         this.block = block;
     }
 
-    public boolean isBlocked() {
+    public boolean isBlocked(Job job) {
         if (block == null) {
             return false;
         }
         try {
-            return block.call();
+            return block.call(job);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -51,5 +54,14 @@ public class Route {
 
     public double getProbability() {
         return probability;
+    }
+
+    public void setBlock(Block block) {
+        this.block = block;
+    }
+
+    @FunctionalInterface
+    public interface Block {
+        Boolean call(Job job);
     }
 }

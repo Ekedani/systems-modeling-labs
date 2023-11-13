@@ -49,10 +49,10 @@ public class Element {
         nextId++;
     }
 
-    private static ArrayList<Route> getUnblockedRoutes(ArrayList<Route> routes) {
+    private static ArrayList<Route> getUnblockedRoutes(ArrayList<Route> routes, Job routedJob) {
         var unblockedRoutes = new ArrayList<Route>();
         for (var route : routes) {
-            if (!route.isBlocked()) {
+            if (!route.isBlocked(routedJob)) {
                 unblockedRoutes.add(route);
             }
         }
@@ -112,19 +112,19 @@ public class Element {
         this.quantity += delta;
     }
 
-    public Route getNextRoute() {
+    public Route getNextRoute(Job routedJob) {
         if (routes.size() == 0) {
             return new Route(null);
         }
         return switch (routing) {
-            case BY_PROBABILITY -> getNextRouteByProbability();
-            case BY_PRIORITY -> getNextRouteByPriority();
-            case COMBINED -> getNextRouteCombined();
+            case BY_PROBABILITY -> getNextRouteByProbability(routedJob);
+            case BY_PRIORITY -> getNextRouteByPriority(routedJob);
+            case COMBINED -> getNextRouteCombined(routedJob);
         };
     }
 
-    private Route getNextRouteByProbability() {
-        var unblockedRoutes = getUnblockedRoutes(routes);
+    private Route getNextRouteByProbability(Job routedJob) {
+        var unblockedRoutes = getUnblockedRoutes(routes, routedJob);
         if (unblockedRoutes.size() == 0) {
             return routes.get(0);
         }
@@ -138,18 +138,18 @@ public class Element {
         return unblockedRoutes.get(unblockedRoutes.size() - 1);
     }
 
-    private Route getNextRouteByPriority() {
-        var unblockedRoutes = getUnblockedRoutes(routes);
+    private Route getNextRouteByPriority(Job routedJob) {
+        var unblockedRoutes = getUnblockedRoutes(routes, routedJob);
         if (unblockedRoutes.size() == 0) {
             return routes.get(0);
         }
         return unblockedRoutes.get(0);
     }
 
-    private Route getNextRouteCombined() {
+    private Route getNextRouteCombined(Job routedJob) {
         Route selectedRoute = null;
         for (var route : routes) {
-            if (!route.isBlocked()) {
+            if (!route.isBlocked(routedJob)) {
                 selectedRoute = route;
                 break;
             }

@@ -62,8 +62,8 @@ public class FunRand {
     public static double Erlang(double timeMean, double shape) {
         double a = 0;
         for (int i = 0; i < shape; i++) {
-            a += Exponential(timeMean);
+            a += Math.log(Math.random());
         }
-        return a;
+        return (-1 / (timeMean / shape)) * a;
     }
 }

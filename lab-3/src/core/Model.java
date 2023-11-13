@@ -7,7 +7,8 @@ public class Model {
     protected final ArrayList<Element> elements;
     protected double tCurr;
     protected double tNext;
-    int nearestEvent;
+    protected int nearestEvent;
+    protected boolean isFirstIteration = true;
 
     public Model(Element... elements) {
         this.elements = new ArrayList<>(Arrays.asList(elements));
@@ -20,7 +21,7 @@ public class Model {
         while (tCurr < time) {
             tNext = Double.MAX_VALUE;
             for (var element : elements) {
-                if (tCurr < element.getTNext() && element.getTNext() < tNext) {
+                if ((tCurr < element.getTNext() || isFirstIteration) && element.getTNext() < tNext) {
                     tNext = element.getTNext();
                     nearestEvent = element.getId();
                 }
@@ -42,6 +43,7 @@ public class Model {
                     element.outAct();
                 }
             }
+            isFirstIteration = false;
             printInfo();
         }
         printResult();
