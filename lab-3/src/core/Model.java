@@ -37,7 +37,6 @@ public class Model {
                 element.setTCurr(tCurr);
             }
             elements.get(nearestEvent).outAct();
-            // TODO: maybe should be reversed
             for (var element : elements) {
                 if (element.getTNext() == tCurr) {
                     element.outAct();

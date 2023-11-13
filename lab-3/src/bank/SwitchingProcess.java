@@ -26,11 +26,11 @@ public class SwitchingProcess extends core.Process {
     public void outAct() {
         trySwitchProcess();
         super.outAct();
-        /*for (var neighbor : neighbors) {
+        for (var neighbor : neighbors) {
             if (neighbor instanceof SwitchingProcess) {
                 ((SwitchingProcess) neighbor).trySwitchProcess();
             }
-        }*/
+        }
     }
 
     @Override

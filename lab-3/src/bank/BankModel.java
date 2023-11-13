@@ -31,6 +31,7 @@ public class BankModel extends core.Model {
         }
         System.out.println("Mean clients num: " + meanClientsNum / tCurr);
         System.out.println("Average client in bank time: " + getAverageJobInSystemTime());
+        System.out.println("Mean leave interval: " + getGlobalMeanLeaveInterval());
         System.out.println("Failure percentage: " + getTotalFailureProbability() * 100 + "%");
         System.out.println("Total switched jobs: " + totalSwitchedJobs);
     }
@@ -75,5 +76,17 @@ public class BankModel extends core.Model {
             totalJobInSystemTime += job.getTimeOut() - job.getTimeIn();
         }
         return totalJobInSystemTime / jobs.size();
+    }
+
+    private double getGlobalMeanLeaveInterval() {
+        double totalLeaveInterval = 0;
+        double totalQuantity = 0;
+        for (var element : elements) {
+            if (element instanceof Process p) {
+                totalLeaveInterval += p.getMeanLeaveInterval() * p.getQuantity();
+                totalQuantity += p.getQuantity();
+            }
+        }
+        return totalLeaveInterval / totalQuantity;
     }
 }
