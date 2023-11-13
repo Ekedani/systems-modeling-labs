@@ -6,8 +6,7 @@ import core.*;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("lab-3");
-        //bank();
+        // bank();
         clinic();
     }
 
@@ -58,11 +57,11 @@ public class Main {
 
         var create = new PatientCreate("Patient Creator", 15);
         var registration = new RegistrationProcess("Registration", 15, 2);
-        var wardsTransfer = new Process("Wards Transfer", 3, 8, 2);
-        var laboratoryTransfer = new Process("Laboratory Transfer", 2, 5, 200);
+        var wardsTransfer = new Process("Wards Transfer", 3, 8, 3);
+        var laboratoryTransfer = new Process("Laboratory Transfer", 2, 5, 100);
         var laboratoryRegistration = new Process("Laboratory Registration", 4.5, 3, 1);
         var laboratoryAnalysis = new TypeModifyingProcess("Laboratory Analysis", 4, 2, 2);
-        var registrationTransfer = new Process("Registration Transfer", 2, 5, 200);
+        var registrationTransfer = new Process("Registration Transfer", 2, 5, 100);
 
         var wardsDispose = new Dispose("Dispose [Type 1 & 2]");
         var laboratoryDispose = new Dispose("Dispose [Type 3]");

@@ -42,7 +42,7 @@ public class SwitchingProcess extends core.Process {
     public void trySwitchProcess() {
         for (var neighbor : neighbors) {
             while (this.getQueueSize() - neighbor.getQueueSize() >= deltaToSwitch) {
-                var switchedJob = this.queue.pop();
+                var switchedJob = this.queue.pollLast();
                 neighbor.inAct(switchedJob);
                 switchedJobs++;
             }

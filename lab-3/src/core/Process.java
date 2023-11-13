@@ -45,7 +45,6 @@ public class Process extends Element {
 
     @Override
     public void inAct(Job job) {
-        super.inAct(job);
         var freeChannel = getFreeChannel();
         if (freeChannel != null) {
             freeChannel.setCurrentJob(job);
@@ -237,8 +236,8 @@ public class Process extends Element {
             return tNext;
         }
 
-        public void setTNext(double tnext) {
-            this.tNext = tnext;
+        public void setTNext(double tNext) {
+            this.tNext = tNext;
         }
     }
 

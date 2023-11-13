@@ -1,5 +1,7 @@
 package clinic;
 
+import core.Job;
+
 import java.util.ArrayDeque;
 import java.util.HashMap;
 
@@ -19,6 +21,25 @@ public class RegistrationProcess extends core.Process {
         this.patientTypedDelays = new HashMap<>();
         for (int i = 0; i < types.length; i++) {
             this.patientTypedDelays.put(types[i], delays[i]);
+        }
+    }
+
+    @Override
+    public void inAct(Job job) {
+        var freeChannel = getFreeChannel();
+        if (freeChannel != null) {
+            freeChannel.setCurrentJob(job);
+            var originalDelayMean = getDelayMean();
+            var patientType = ((Patient) job).getType();
+            setDelayMean(patientTypedDelays.get(patientType));
+            freeChannel.setTNext(super.getTCurr() + super.getDelay());
+            setDelayMean(originalDelayMean);
+        } else {
+            if (queue.size() < getMaxQueueSize()) {
+                queue.add(job);
+            } else {
+                failures++;
+            }
         }
     }
 

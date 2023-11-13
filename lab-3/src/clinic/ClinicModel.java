@@ -26,7 +26,7 @@ public class ClinicModel extends core.Model {
         printPatientInfo();
         System.out.println("\n-----------STATISTICS------------");
         System.out.println("Mean time in system (processed): " + getMeanTimeInSystem());
-        System.out.println("Laboratory arrival interval: " + getLaboratoryArrivalInterval());
+        System.out.println("Mean laboratory arrival interval: " + getLaboratoryArrivalInterval());
     }
 
     private void printPatientInfo() {
