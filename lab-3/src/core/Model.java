@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Model {
-    private final ArrayList<Element> elements;
-    double tCurr;
-    double tNext;
+    protected final ArrayList<Element> elements;
+    protected double tCurr;
+    protected double tNext;
     int nearestEvent;
 
     public Model(Element... elements) {
@@ -28,6 +28,7 @@ public class Model {
             updateBlockedElements();
             System.out.println("\nEvent in " + elements.get(nearestEvent).getName() + ", tNext = " + tNext);
             var delta = tNext - tCurr;
+            doModelStatistics(delta);
             for (Element element : elements) {
                 element.doStatistics(delta);
             }
@@ -64,6 +65,9 @@ public class Model {
                 System.out.println("   Failure Probability = " + p.getFailures() / (double) (p.getQuantity() + p.getFailures()));
             }
         }
+    }
+
+    protected void doModelStatistics(double delta) {
     }
 
     private void updateBlockedElements() {

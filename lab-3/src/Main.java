@@ -1,4 +1,5 @@
-import core.Process;
+import bank.BankModel;
+import bank.SwitchingProcess;
 import core.*;
 
 public class Main {
@@ -9,25 +10,29 @@ public class Main {
 
     public static void bank() {
         var create = new Create("Create #1", 0.5, 0.1);
-        var cashierWindow1 = new Process("Cashier window #1", 1, 0.3, 1);
-        var cashierWindow2 = new Process("Cashier window #2", 1, 0.3, 1);
+        var cashierWindow1 = new SwitchingProcess("Cashier window #1", 1, 0.3, 1, 2);
+        var cashierWindow2 = new SwitchingProcess("Cashier window #2", 1, 0.3, 1, 2);
         var dispose = new Dispose("Dispose #1");
 
         cashierWindow1.initializeChannelsWithJobs(1);
-        cashierWindow2.initializeChannelsWithJobs(1);
         cashierWindow1.initializeQueueWithJobs(2);
+        cashierWindow1.setNeighbors(cashierWindow2);
+        cashierWindow2.initializeChannelsWithJobs(1);
         cashierWindow2.initializeQueueWithJobs(2);
+        cashierWindow2.setNeighbors(cashierWindow1);
 
         create.setDistribution(Distribution.EXPONENTIAL);
         cashierWindow1.setDistribution(Distribution.EXPONENTIAL);
+        cashierWindow1.setDelayMean(0.3);
         cashierWindow2.setDistribution(Distribution.EXPONENTIAL);
+        cashierWindow2.setDelayMean(0.3);
 
         cashierWindow1.setMaxQueueSize(3);
         cashierWindow2.setMaxQueueSize(3);
 
-        create.setRouting(Routing.BY_PROBABILITY);
+        create.setRouting(Routing.BY_PRIORITY);
         create.addRoutes(
-                new Route(cashierWindow1, 0.5, 0),
+                new Route(cashierWindow1, 0.5, 1, () -> cashierWindow2.getQueueSize() < cashierWindow1.getQueueSize()),
                 new Route(cashierWindow2, 0.5, 0)
         );
 
@@ -39,7 +44,7 @@ public class Main {
                 new Route(dispose)
         );
 
-        var model = new Model(create, cashierWindow1, cashierWindow2, dispose);
+        var model = new BankModel(create, cashierWindow1, cashierWindow2, dispose);
         model.simulate(1000);
     }
 }

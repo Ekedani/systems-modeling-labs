@@ -20,4 +20,8 @@ public class Dispose extends Element {
     public void printInfo() {
         System.out.println(getName() + " quantity = " + getQuantity());
     }
-}
+
+    public ArrayList<Job> getProcessedJobs() {
+        return processedJobs;
+    }
+ }

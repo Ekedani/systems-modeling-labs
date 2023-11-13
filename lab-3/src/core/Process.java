@@ -2,15 +2,17 @@ package core;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Queue;
+import java.util.Deque;
 
 public class Process extends Element {
-    private final Queue<Job> queue = new ArrayDeque<>();
+    protected final Deque<Job> queue = new ArrayDeque<>();
     private final ArrayList<Channel> channels = new ArrayList<>();
     private int failures = 0;
+    private int maxQueueSize = Integer.MAX_VALUE;
     private double meanQueue = 0.0;
     private double workTime = 0.0;
-    private int maxQueueSize = Integer.MAX_VALUE;
+    private double totalLeaveTime = 0.0;
+    private double previousLeaveTime = 0.0;
 
     public Process(String name, double delayMean, int channelsNum) {
         super(name, delayMean);
@@ -69,12 +71,15 @@ public class Process extends Element {
             }
 
             if (nextRoute.getElement() != null) {
+                job.setTimeOut(super.getTCurr());
                 nextRoute.getElement().inAct(job);
             }
 
             channel.setCurrentJob(null);
             channel.setTNext(Double.MAX_VALUE);
             changeQuantity(1);
+            totalLeaveTime += super.getTCurr() - previousLeaveTime;
+            previousLeaveTime = super.getTCurr();
         }
 
         var freeChannel = getFreeChannel();
@@ -174,12 +179,35 @@ public class Process extends Element {
                 " state = " + getState() +
                 " quantity = " + getQuantity() +
                 " tnext = " + getTNext() +
-                " failures = " + failures
+                " failures = " + failures +
+                " queue size = " + queue.size()
         );
     }
 
+
     public int getQueueSize() {
         return queue.size();
+    }
+
+    public double getMeanLeaveInterval() {
+        return totalLeaveTime / getQuantity();
+    }
+
+    public ArrayList<Job> getUnprocessedJobs() {
+        var jobs = new ArrayList<Job>();
+        for (var channel : channels) {
+            if (channel.getCurrentJob() != null) {
+                jobs.add(channel.getCurrentJob());
+            }
+        }
+        if (!queue.isEmpty()) {
+            jobs.addAll(queue);
+        }
+        for (var job : jobs) {
+            job.setTimeOut(super.getTCurr());
+
+        }
+        return jobs;
     }
 
     static class Channel {
@@ -206,4 +234,5 @@ public class Process extends Element {
             this.tNext = tnext;
         }
     }
+
 }
