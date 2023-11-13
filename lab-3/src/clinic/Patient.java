@@ -9,4 +9,8 @@ public class Patient extends Job {
         super(timeIn);
         this.type = type;
     }
+
+    public int getType() {
+        return type;
+    }
 }

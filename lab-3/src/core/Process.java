@@ -6,13 +6,13 @@ import java.util.Deque;
 
 public class Process extends Element {
     protected final Deque<Job> queue = new ArrayDeque<>();
-    private final ArrayList<Channel> channels = new ArrayList<>();
-    private int failures = 0;
-    private int maxQueueSize = Integer.MAX_VALUE;
-    private double meanQueue = 0.0;
-    private double workTime = 0.0;
-    private double totalLeaveTime = 0.0;
-    private double previousLeaveTime = 0.0;
+    protected final ArrayList<Channel> channels = new ArrayList<>();
+    protected int failures = 0;
+    protected int maxQueueSize = Integer.MAX_VALUE;
+    protected double meanQueue = 0.0;
+    protected double workTime = 0.0;
+    protected double totalLeaveTime = 0.0;
+    protected double previousLeaveTime = 0.0;
 
     public Process(String name, double delayMean, int channelsNum) {
         super(name, delayMean);
@@ -61,6 +61,11 @@ public class Process extends Element {
 
     @Override
     public void outAct() {
+        processCurrentJobs();
+        startNextJobs();
+    }
+
+    protected void processCurrentJobs() {
         var channelsWithMinTNext = getChannelsWithMinTNext();
         for (var channel : channelsWithMinTNext) {
             var job = channel.getCurrentJob();
@@ -81,7 +86,9 @@ public class Process extends Element {
             totalLeaveTime += super.getTCurr() - previousLeaveTime;
             previousLeaveTime = super.getTCurr();
         }
+    }
 
+    protected void startNextJobs() {
         var freeChannel = getFreeChannel();
         while (!queue.isEmpty() && freeChannel != null) {
             var job = queue.poll();
@@ -107,7 +114,7 @@ public class Process extends Element {
         return channelsWithMinTNext;
     }
 
-    private Channel getFreeChannel() {
+    protected Channel getFreeChannel() {
         for (var channel : channels) {
             if (channel.getState() == 0) {
                 return channel;
@@ -210,7 +217,7 @@ public class Process extends Element {
         return jobs;
     }
 
-    static class Channel {
+    protected static class Channel {
         private Job currentJob = null;
         private double tNext = Double.MAX_VALUE;
 

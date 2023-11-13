@@ -17,12 +17,16 @@ public class Create extends Element {
     public void outAct() {
         super.outAct();
         super.setTNext(super.getTCurr() + super.getDelay());
-        var createdJob = new Job(super.getTCurr());
+        var createdJob = createJob();
         var nextRoute = super.getNextRoute();
         if (nextRoute.getElement() == null || nextRoute.isBlocked()) {
             failures++;
         } else {
             nextRoute.getElement().inAct(createdJob);
         }
+    }
+
+    protected Job createJob() {
+        return new Job(super.getTCurr());
     }
 }

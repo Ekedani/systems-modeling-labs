@@ -1,5 +1,8 @@
 import bank.BankModel;
 import bank.SwitchingProcess;
+import clinic.PatientCreate;
+import clinic.RegistrationProcess;
+import core.Process;
 import core.*;
 
 public class Main {
@@ -46,5 +49,60 @@ public class Main {
 
         var model = new BankModel(create, cashierWindow1, cashierWindow2, dispose);
         model.simulate(1000);
+    }
+
+    public static void clinic() {
+        final int[] patientTypes = {1, 2, 3};
+        final double[] patientFrequencies = {0.5, 0.1, 0.4};
+        final double[] patientDelays = {15, 40, 30};
+
+        var create = new PatientCreate("Patient Creator", 0.5);
+        var registration = new RegistrationProcess("Registration", 1, 2);
+        var wardsTransfer = new Process("Wards Transfer", 1, 2);
+        var laboratoryTransfer = new Process("Laboratory Transfer", 1, 1000);
+        var laboratoryRegistration = new Process("Laboratory Registration", 1, 1);
+        var laboratoryAnalysis = new Process("Laboratory Analysis", 1, 2);
+        var registrationTransfer = new Process("Registration Transfer", 1, 2);
+
+        var wardsDispose = new Dispose("Dispose [Type 1 & 2]");
+        var laboratoryDispose = new Dispose("Dispose [Type 3]");
+
+
+        create.setPatientTypedFrequencies(patientTypes, patientFrequencies);
+        registration.setPatientTypedDelays(patientTypes, patientDelays);
+        registration.setPrioritizedPatientType(1);
+
+        create.setDistribution(Distribution.EXPONENTIAL);
+        registration.setDistribution(Distribution.EXPONENTIAL);
+        wardsTransfer.setDistribution(Distribution.UNIFORM);
+        laboratoryTransfer.setDistribution(Distribution.UNIFORM);
+        laboratoryRegistration.setDistribution(Distribution.ERLANG);
+        laboratoryAnalysis.setDistribution(Distribution.ERLANG);
+        registrationTransfer.setDistribution(Distribution.UNIFORM);
+
+        create.addRoutes(
+                new Route(registration)
+        );
+        registration.addRoutes(
+                new Route(wardsTransfer),
+                new Route(laboratoryTransfer)
+        );
+        wardsTransfer.addRoutes(
+                new Route(wardsDispose)
+        );
+        laboratoryTransfer.addRoutes(
+                new Route(laboratoryRegistration)
+        );
+        laboratoryRegistration.addRoutes(
+                new Route(laboratoryAnalysis)
+        );
+        laboratoryAnalysis.addRoutes(
+                new Route(laboratoryDispose),
+                new Route(registrationTransfer)
+        );
+        registrationTransfer.addRoutes(
+                new Route(registration)
+        );
+
     }
 }
